@@ -1,6 +1,17 @@
- AZURE_CLIENT_ID=$(azureClientId)
-        AZURE_API_CLIENT_ID=$(azureApiClientId)
-        AZURE_API_URL=$(azureApiUrl)
-        ACCESS_TOKEN_SCOPE=$(accessTokenScope)
-        EOF
-      displayName: 'configure azure tenant, client and api details'
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '12.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+    npm run build
+  displayName: 'npm install and build'
+
