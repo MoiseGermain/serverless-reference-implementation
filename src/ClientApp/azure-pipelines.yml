@@ -70,12 +70,14 @@ stages:
           steps:
           - script: |
               cat "$(Pipeline.Workspace)/drop/version.txt"
-            displayName: 'Print release version'
+              version=$(cat "$(Pipeline.Workspace)/drop/version.txt")
+              echo "Version from file: $version"
+              echo "##vso[task.setvariable variable=releaseVersion]$version"
+            displayName: 'Print and set release version'
 
           - script: |
-              echo '##vso[task.setvariable variable=releaseVersion]'$(cat "$(Pipeline.Workspace)/drop/version.txt")
-            displayName: 'Set release version'
-            name: setVarReleaseVersion
+              echo "Release version: $(releaseVersion)"
+            displayName: 'Print releaseVersion variable'
 
           - task: GithubRelease@0
             displayName: 'Create or edit GitHub release'
