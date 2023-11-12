@@ -69,7 +69,7 @@ stages:
         deploy:
           steps:
           - script: |
-              echo "##vso[task.setvariable variable=releaseVersion]version1"
+              echo "##vso[task.setvariable variable=releaseVersion]v1"
             displayName: 'Set fixed release version'
 
           - script: |
