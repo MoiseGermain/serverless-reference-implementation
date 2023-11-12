@@ -1,18 +1,18 @@
 variables:
-  ServiceConnectionName: 'moiseserviceconnection'
+  ServiceConnectionName: 'MoiseGermain-srvconn'
   Location: 'eastus'
-  ResourceGroup: 'DroneDropRG'
-  AppName: 'DroneDrop' # Ensure it's 11 characters or less
+  ResourceGroup: 'DronestatusRG'
+  AppName: 'Dronestatus' # Ensure it's 11 characters or less
   DeployAzureResources: false
-  DeployableSourceBranch: 'refs/heads/staging'
-  SlotName: 'droneap-ds-funcapp'
+  DeployableSourceBranch: 'refs/heads/master'
+  SlotName: 'staging (dronespy22arfo5ur6y-dronestatus/staging)'
 
 name: $(Date:yyyyMMdd)$(Rev:.rr)
 
 trigger:
   branches:
     include:
-    - staging
+    - master
     - feature/* # ci-only
 
 resources:
