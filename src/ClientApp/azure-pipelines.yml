@@ -20,6 +20,7 @@ stages:
       inputs:
         versionSpec: '10.x'
       displayName: 'Install Node.js'
+
     - script: |
         cd src/ClientApp
         cat > .env.production <<EOF
@@ -30,22 +31,26 @@ stages:
         ACCESS_TOKEN_SCOPE=api://a6cd7a26-a6b9-4807-9c9e-9000d72ba1e0/API_IMPERSONATION_PERMISSION
         EOF
       displayName: 'Configure Azure tenant, client and API details'
+
     - script: |
         cd src/ClientApp
         npm install
         npx gatsby build
       displayName: 'Gatsby build'
+
     - script: |
         cd src/ClientApp/public
         sudo apt-get install brotli --install-suggests --no-install-recommends -q --assume-yes
         for f in $(find . -type f \( -iname '*.html' -o -iname '*.map' -o -iname '*.js' -o -iname '*.json' \)); do brotli $f -Z -j -f -v && mv ${f}.br $f; done
       displayName: 'Enable compression at origin level'
+
     - script: |
         cd $(Build.SourcesDirectory)
         echo $(docker run --rm -v "$(pwd):/repo" gittools/gitversion:5.6.10-alpine.3.12-x64-3.1 /repo) > .gitversion
         echo $(cat .gitversion | grep -oP '(?<="MajorMinorPatch": ")[^"]*') > src/ClientApp/public/version.txt
         echo $(cat .gitversion | grep -oP '(?<="FullSemVer": ")[^"]*' | sed -e "s/\+/-/g") > src/ClientApp/public/semver.txt
       displayName: 'Bump version'
+
     - task: PublishBuildArtifacts@1
       inputs:
         pathtoPublish: 'src/ClientApp/public'
@@ -64,10 +69,14 @@ stages:
         deploy:
           steps:
           - script: |
+              cat "$(Pipeline.Workspace)/drop/version.txt"
+            displayName: 'Print release version'
+
+          - script: |
               echo '##vso[task.setvariable variable=releaseVersion]'$(cat "$(Pipeline.Workspace)/drop/version.txt")
-              echo '##vso[task.setvariable variable=releaseSemVer]'$(cat "$(Pipeline.Workspace)/drop/semver.txt")
             displayName: 'Set release version'
             name: setVarReleaseVersion
+
           - task: GithubRelease@0
             displayName: 'Create or edit GitHub release'
             inputs:
