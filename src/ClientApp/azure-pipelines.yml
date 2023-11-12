@@ -69,11 +69,8 @@ stages:
         deploy:
           steps:
           - script: |
-              cat "$(Pipeline.Workspace)/drop/version.txt"
-              version=$(cat "$(Pipeline.Workspace)/drop/version.txt")
-              echo "Version from file: $version"
-              echo "##vso[task.setvariable variable=releaseVersion]$version"
-            displayName: 'Print and set release version'
+              echo "##vso[task.setvariable variable=releaseVersion]version1"
+            displayName: 'Set fixed release version'
 
           - script: |
               echo "Release version: $(releaseVersion)"
